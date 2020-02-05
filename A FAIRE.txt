@@ -1,0 +1,20 @@
+(passé) Bug : j'ai l'impression que "start_environment" et "addship(canvas)" ne font pas ce qu'il devrait. Regarder pourquoi aucun polygon n'est créé
+
+Note : quand on exécuter une fonction qui est dans un autre fichier (ex : on se trouve dans ship, et on appelle window.fonction) on ne peut pas accéder aux fonctions globales de l'autre fichier (ex : de window)
+Exemple typique : cliquer sur un bouton [donc dans window] qui appelle une fonction de ship, qui elle-même appelle une fonction de window. On ne peut pas accéder aux variables globales de window.
+Solution : accéder aux variables globales uniquement dans window, et pas ailleurs. Si on veut y accéder ailleurs, on envoie les variables globales depuis window à ailleurs.
+
+-----
+
+- Regarder quelle valeur de _lambda est réaliste ; regarde quelle valeur de l'amplitude de la force du moteur est réalise
+- Implanter correctement les rotations
+
+
+ESSAYER DE SE MAINTENIR A : 
+
+Tout ce qui concerne l'environnement dans sa généralité sera écrit dans "main"
+Tout ce qui concerne le canvas sera écrit dans "window"
+Tout ce qui concerne les bateaux et leurs caractéristiques sera écrit dans "ship"
+
+
+https://stackoverflow.com/questions/3408779/how-to-rotate-a-polygon-on-a-tkinter-canvas

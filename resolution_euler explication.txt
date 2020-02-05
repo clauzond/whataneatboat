@@ -1,0 +1,7 @@
+On peut observer que :
+-pour des vitesses < 100 m.s-1 
+-pour une delta(t) de 1/60 seconde
+les approximations faites sont quasi-exactes.
+
+On pourra donc procéder "step by step", en modifiant la vitesse tous les 1/60 secondes, puisque la "division de la tâche" n'impacte pas non plus.
+Si la complexité est trop élevée, on pourra la diviser en augmentant la valeur delta(t) tant que les approximations faites par la méthode d'Euler sont acceptables.
