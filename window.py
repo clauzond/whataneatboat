@@ -5,6 +5,8 @@ import equation
 
 #global env_canvas
 
+# Aide pour les interfaces Tkinter
+# https://python.doctor/page-tkinter-interface-graphique-python-tutoriel
 
 ## Création de la fenêtre de départ
 def create_window():
