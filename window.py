@@ -133,19 +133,19 @@ def create_environnement():
 
 
 
-    envbutton1=Button(bottomframe,text="Démarrer l'environnement'",font="Constantia 15",justify="center",overrelief="groove",activeforeground="blue",activebackground="white",bg="white",command=start_environment)
+    envbutton1=Button(bottomframe,text="Démarrer l'environnement",font="Constantia 15",justify="center",overrelief="groove",activeforeground="blue",activebackground="white",bg="white",command=start_environnement)
 
     envbutton1.pack(padx=10,pady=10,side=LEFT)
 
-    envbutton2=Button(bottomframe,text="Start/Stop loop",font="Constantia 15",justify="center",overrelief="groove",activeforeground="blue",activebackground="white",bg="white",command=start_loop)
+    envbutton2=Button(bottomframe,text="Loop : OFF",font="Constantia 15",justify="center",overrelief="groove",activeforeground="blue",activebackground="white",bg="white",state=DISABLED,command=start_loop)
     
     menubar = Menu(env_window)
     
     # Environnement pulldown menu
     envmenu = Menu(menubar, tearoff=0)
-    envmenu.add_command(label="Démarrer l'environnement",command=start_environment)
+    envmenu.add_command(label="Démarrer l'environnement",command=start_environnement)
     envmenu.add_separator()
-    envmenu.add_command(label="Démarrer la boucle",command=start_loop)
+    envmenu.add_command(label="Loop : OFF",command=start_loop,state=DISABLED)
     
     
     menubar.add_cascade(label="Environnement",menu=envmenu)
@@ -237,19 +237,17 @@ def move_right():
 
 # http://tkinter.fdex.eu/doc/caw.html#ellipses-et-cercles pour "comment les coordonnées de l'ovale marche"
 # coin haut gauche (x0,y0) coin bas droite (x1,y1)
-def create_ship_on_canvas(canvas,x,y):
+def create_ship_on_canvas(canvas,x,y,shipnumber):
     global coords
 
 
 
     coords = [(x-5,y-5),(x+5,y+5)]
-    Polygon = canvas.create_oval(coords,fill='red',outline='yellow',width=1)
-
+    Polygon = canvas.create_oval(coords,fill='white',outline='red',width=1)
+    Label = canvas.create_text(x,y,text=str(shipnumber),font="Helvetica 10")
     canvas.update()
 
-    print("Polygon = ",Polygon,"Canvas = ",canvas)
-
-    return(Polygon)
+    return(Polygon,Label)
 
 
 # Fonction qui déplace le bateau sur le canvas
@@ -277,6 +275,8 @@ def move_ship_on_canvas(bateau,polygone,tmax,tactuel):
 
 ## LOOP
 
+
+# 1 pixel = 1 mètre puisqu'on manipule tout en mètre, et qu'on déplace le bateau selon "bateau.deltax" qui est en mètre aussi
 def update_environnement(totalships,canvas,_lambda,dt):
 
 
@@ -292,6 +292,8 @@ def update_environnement(totalships,canvas,_lambda,dt):
             equation.update_ship_without_Fext(bateau,dt,_lambda)
 
         canvas.move(bateau.polygon,bateau.deltax,bateau.deltay)
+        canvas.move(bateau.label,bateau.deltax,bateau.deltay)
+        
 
 
 
@@ -318,22 +320,28 @@ def loop():
 
 ## ENVIRONNEMENT CREATION
 
-# NumberOfShips défini précédemment
-def start_environment():
-    global totalships
+# NumberOfShips sera défini ailleurs
+state_environnement = False
+def start_environnement():
+    global totalships,state_environnement
     
-    envbutton1.config(text="Ajouter des bateaux")
-    envmenu.entryconfigure(0,label="Ajouter des bateaux")
+    if state_environnement == False:
+        state_environnement = True
+        envbutton1.config(text="Ajouter un bateau")
+        envmenu.entryconfigure(0,label="Ajouter un bateau")
+        envbutton2.config(state=NORMAL)
+        envmenu.entryconfigure(2,state=NORMAL)
 
-    NumberOfShips=1
-
-    totalships = ship.TotalShips(env_canvas)
-
-    for k in range(0,NumberOfShips):
-        print("Bateau en création")
+        NumberOfShips=1
+    
+        totalships = ship.TotalShips(env_canvas)
+    
+        for k in range(0,NumberOfShips):
+            print("Bateau en création")
+            totalships.addship(env_canvas)
+    
+    else:
         totalships.addship(env_canvas)
-
-    return()
 
 
 ## Tests pour exécuter le fichier.

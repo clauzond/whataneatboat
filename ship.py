@@ -66,11 +66,10 @@ class Ship :
             #coords = [(x,y),(x+10,y+10),(x+10,y),(x,y+10)]
             #self.polygon = canvas.create_polygon(coords,fill='red',outline='yellow',width=3)
 
-        print("Je suis sur le point de créer le bateau")
-        print(canvas)
-        self.polygon = window.create_ship_on_canvas(canvas,x,y)
+        
+        self.polygon,self.label = window.create_ship_on_canvas(canvas,x,y,shipnumber)
 
-        print("Polygone créé")
+        print("Le bateau n°",str(shipnumber),"a été créé")
 
         #except:
         #    print("Erreur : le polygone n'a PAS été créé ! non reconnu")
@@ -95,7 +94,7 @@ class Ship :
 
         self.state_ForceExist = False
         self.state_ForceRadAngle = 0
-        self.state_ForceAmplitude = 1000000 # norme de la force en N(ewton) = kg.m.s-2
+        self.state_ForceAmplitude = 100000 # norme de la force en N(ewton) = kg.m.s-2
 
 
 
