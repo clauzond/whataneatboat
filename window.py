@@ -92,7 +92,7 @@ def create_parametres():
 
 
 def create_environnement():
-    global env_canvas
+    global env_canvas,envmenu,envbutton1,envbutton2
 
     env_window = Toplevel()
     env_window.title("Environnement")
@@ -133,31 +133,63 @@ def create_environnement():
 
 
 
-    envbutton1=Button(bottomframe,text="Executer",font="Constantia 15",justify="center",overrelief="groove",activeforeground="blue",activebackground="white",bg="white",command=start_environment)
+    envbutton1=Button(bottomframe,text="Démarrer l'environnement'",font="Constantia 15",justify="center",overrelief="groove",activeforeground="blue",activebackground="white",bg="white",command=start_environment)
 
     envbutton1.pack(padx=10,pady=10,side=LEFT)
 
-    envbutton2=Button(bottomframe,text="Start/Stop loop",font="Constantia 15",justify="center",overrelief="groove",activeforeground="blue",activebackground="white",bg="white",command=bouton_de_test)
+    envbutton2=Button(bottomframe,text="Start/Stop loop",font="Constantia 15",justify="center",overrelief="groove",activeforeground="blue",activebackground="white",bg="white",command=start_loop)
+    
+    menubar = Menu(env_window)
+    
+    # Environnement pulldown menu
+    envmenu = Menu(menubar, tearoff=0)
+    envmenu.add_command(label="Démarrer l'environnement",command=start_environment)
+    envmenu.add_separator()
+    envmenu.add_command(label="Démarrer la boucle",command=start_loop)
+    
+    
+    menubar.add_cascade(label="Environnement",menu=envmenu)
+    
+    # Affichage pulldown menu
+    affmenu = Menu(menubar, tearoff=1)
+    affmenu.add_command(label="Option affichage 1")
+    affmenu.add_separator()
+    affmenu.add_command(label="Option affichage 2")
+    
+    menubar.add_cascade(label="Affichage",menu=affmenu)
+
+    env_canvas.bind("<Button-3>",popup)
+
 
     envbutton2.pack(padx=10,pady=10,side=LEFT)
 
 
     # Démarre l'environnement
-
+    env_window.config(menu=menubar)
     env_window.mainloop()
 
 
-
+def popup(event):
+    envmenu.post(event.x_root,event.y_root)
 
 # ACTUELLEMENT :
 # Ce bouton démarre la loop du temps
-def bouton_de_test():
+def start_loop():
     global state_loop
     if state_loop==False:
-        print("Loop démarrée")
-        state_loop=True
-        loop()
+        try:
+            print("Loop démarrée")
+            envmenu.entryconfig(2, label="Loop : ON")
+            envbutton2.config(text="Loop : ON")
+            env_canvas.config()
+            state_loop=True
+            loop()
+        except:
+            print("Environnement pas démarré !")
+            state_loop=False
     else:
+        envmenu.entryconfig(2,label="Loop : OFF")
+        envbutton2.config(text="Loop : OFF")
         state_loop=False
 
 def move_event(event):
@@ -289,6 +321,9 @@ def loop():
 # NumberOfShips défini précédemment
 def start_environment():
     global totalships
+    
+    envbutton1.config(text="Ajouter des bateaux")
+    envmenu.entryconfigure(0,label="Ajouter des bateaux")
 
     NumberOfShips=1
 

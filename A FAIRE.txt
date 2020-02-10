@@ -6,8 +6,9 @@ Solution : accéder aux variables globales uniquement dans window, et pas ailleu
 
 -----
 
-- Regarder quelle valeur de _lambda est réaliste ; regarde quelle valeur de l'amplitude de la force du moteur est réalise
-- Implanter correctement les rotations
+• Regarder quelle valeur de _lambda est réaliste ; regarde quelle valeur de l'amplitude de la force du moteur est réalise
+• Implanter correctement les rotations
+• Faire en sorte que chaque bateau soit update, puis qu'on puisse les "déplacer" indépendemment l'un de l'autre
 
 
 ESSAYER DE SE MAINTENIR A : 
