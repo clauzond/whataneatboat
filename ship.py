@@ -104,8 +104,9 @@ class Ship :
 
         return(' | '.join("%s: %s" % item for item in attrs.items())+"\n")
 
+    # Ne fait rien pour l'instant
     def move(self,x,y):
-        window.move_ship_on_canvas(self.polygon,x,y)
+        return()
 
 
 

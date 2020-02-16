@@ -1,7 +1,8 @@
-from tkinter import *
-import ship
 import math
+from tkinter import *
+
 import equation
+import ship
 
 #global env_canvas
 
@@ -138,24 +139,24 @@ def create_environnement():
     envbutton1.pack(padx=10,pady=10,side=LEFT)
 
     envbutton2=Button(bottomframe,text="Loop : OFF",font="Constantia 15",justify="center",overrelief="groove",activeforeground="blue",activebackground="white",bg="white",state=DISABLED,command=start_loop)
-    
+
     menubar = Menu(env_window)
-    
+
     # Environnement pulldown menu
     envmenu = Menu(menubar, tearoff=0)
     envmenu.add_command(label="Démarrer l'environnement",command=start_environnement)
     envmenu.add_separator()
     envmenu.add_command(label="Loop : OFF",command=start_loop,state=DISABLED)
-    
-    
+
+
     menubar.add_cascade(label="Environnement",menu=envmenu)
-    
+
     # Affichage pulldown menu
     affmenu = Menu(menubar, tearoff=1)
     affmenu.add_command(label="Option affichage 1")
     affmenu.add_separator()
     affmenu.add_command(label="Option affichage 2")
-    
+
     menubar.add_cascade(label="Affichage",menu=affmenu)
 
     env_canvas.bind("<Button-3>",popup)
@@ -250,26 +251,6 @@ def create_ship_on_canvas(canvas,x,y,shipnumber):
     return(Polygon,Label)
 
 
-# Fonction qui déplace le bateau sur le canvas
-# Prend comme argument "[Ship].polygon", et les coordonnées du déplacement (delta x, delta y)
-def move_ship_on_canvas(bateau,polygone,tmax,tactuel):
-
-    equation.update_ship_with_Fext(bateau,100,0,1000)
-    env_canvas.move(polygone,bateau.deltax,bateau.deltay)
-    tactuel += 1/60
-
-
-    if tactuel < tmax:
-        env_canvas.after(1,move_ship_on_canvas,bateau,polygone,tmax,tactuel)
-
-        #[x0,y0,x1,y1]=env_canvas.coords(polygone)
-        # print("Centre (x,y) du polygone n°",bateau.shipnumber," :",[(x0+x1)/2,(y0+y1)/2])
-        # print("bateau.x=",bateau.x)
-        # print("bateau.y=",bateau.y)
-        # print("bateau.speedx=",bateau.speedx)
-        # print("bateau.speedy=",bateau.speedy)
-        # print("temps total :",totalships.time_since_begin)
-
 
 
 
@@ -277,6 +258,7 @@ def move_ship_on_canvas(bateau,polygone,tmax,tactuel):
 
 
 # 1 pixel = 1 mètre puisqu'on manipule tout en mètre, et qu'on déplace le bateau selon "bateau.deltax" qui est en mètre aussi
+# update_envrionnement sera la fonction qui modifie l'état du système entier pendant "dt"
 def update_environnement(totalships,canvas,_lambda,dt):
 
 
@@ -293,7 +275,7 @@ def update_environnement(totalships,canvas,_lambda,dt):
 
         canvas.move(bateau.polygon,bateau.deltax,bateau.deltay)
         canvas.move(bateau.label,bateau.deltax,bateau.deltay)
-        
+
 
 
 
@@ -324,7 +306,7 @@ def loop():
 state_environnement = False
 def start_environnement():
     global totalships,state_environnement
-    
+
     if state_environnement == False:
         state_environnement = True
         envbutton1.config(text="Ajouter un bateau")
@@ -333,13 +315,13 @@ def start_environnement():
         envmenu.entryconfigure(2,state=NORMAL)
 
         NumberOfShips=1
-    
+
         totalships = ship.TotalShips(env_canvas)
-    
+
         for k in range(0,NumberOfShips):
             print("Bateau en création")
             totalships.addship(env_canvas)
-    
+
     else:
         totalships.addship(env_canvas)
 
@@ -347,4 +329,5 @@ def start_environnement():
 ## Tests pour exécuter le fichier.
 # Ne pas mettre de choses nécessaires dessous, uniquement des éléments à tester.
 
-#create_window()
+
+create_window()
