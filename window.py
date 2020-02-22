@@ -330,4 +330,4 @@ def start_environnement():
 # Ne pas mettre de choses nécessaires dessous, uniquement des éléments à tester.
 
 
-create_window()
+#create_window()
