@@ -35,7 +35,7 @@ def update_ship_without_Fext(bateau,dt,_lambda):
     puis modifie theta (en fonction de dtheta)
 
     bateau : variable de la classe Ship, correspond à 1 bateau donné
-    dt : l'unité infinitésimale de temps, qu'on pose égale à 10 ms
+    dt : l'unité infinitésimale de temps, qu'on pose égale à [...] ms
     _lambda : variable expérimentale, correspond à la force de frottement en -lambda*v ; lambda en kg.s-1
 
     """
@@ -75,8 +75,12 @@ def update_ship_without_Fext(bateau,dt,_lambda):
     dtheta = math.atan2(deltay,deltax) # Renvoie arctan(dy/dx) en prenant en compte la potentielle nullité de dx et le signe de dy
 
 
-    bateau.thetarad += dtheta # dtheta en radian
-    bateau.thetadeg += math.degrees(dtheta) # en degré
+    bateau.thetarad = dtheta # dtheta en radian
+    if bateau.thetarad > 2*math.pi :
+        bateau.thetarad -= 2*math.pi # on garde l'angle en radian entre 0 et 2*pi
+    bateau.thetadeg = math.degrees(dtheta) # en degré
+    if bateau.thetadeg > 360 :
+        bateau.thetadeg -= 360 # on garde l'angle en degré entre 0 et 360
 
 
 
@@ -91,12 +95,12 @@ def update_ship_with_Fext(bateau,dt,_lambda,orientation_absolue_force,amplitude_
     puis modifie theta (en fonction de dtheta)
 
     bateau : variable de la classe Ship, correspond à 1 bateau donné
-    dt : l'unité infinitésimale de temps, qu'on pose égale à 10 ms
+    dt : l'unité infinitésimale de temps, qu'on pose égale à [...] ms
     _lambda : variable expérimentale, correspond à la force de frottement en -lambda*v ; lambda en kg.s-1
     orientation_absolue_force : voir un schéma pour mieux se représenter, on a pris une orientation anti-trigo pour s'accorder à tkinter
-        -> si = 0, tout droit
-        -> si positive, signifie tourner à droite
-        -> si négative, signifie tourner à gauche
+        -> si = 0, tout droit [par rapport à la direction actuelle du bateau]
+        -> si positive, signifie tourner à droite [par rapport à la direction actuelle du bateau]
+        -> si négative, signifie tourner à gauche [par rapport à la direction actuelle du bateau]
         si tu es confus, teste pour theta=0 et orientation_absolue_force=pi/2, et voit que cela tourne bien vers la droite
     amplitude_force : Fext = F*cos(theta + orientation_absolue_force )*ux  +  F*sin(theta + orientation_absolue_force)*uy
         où F est amplitude_force en Newton
@@ -104,10 +108,12 @@ def update_ship_with_Fext(bateau,dt,_lambda,orientation_absolue_force,amplitude_
 
     """
     F = amplitude_force
-    theta = bateau.thetarad
+    theta = bateau.thetarad # orientation à t du bateau
 
-    Fx = F * math.cos(orientation_absolue_force)
-    Fy = F * math.sin(orientation_absolue_force)
+    orientation_relative_force = theta + orientation_absolue_force # orientation "relative" de la force, càd sur notre repère tkinter
+
+    Fx = F * math.cos(orientation_relative_force)
+    Fy = F * math.sin(orientation_relative_force)
 
 
     tau = bateau.mass / _lambda # tau = masse/lambda où masse en kg, lambda en kg.s-1
@@ -129,7 +135,7 @@ def update_ship_with_Fext(bateau,dt,_lambda,orientation_absolue_force,amplitude_
     bateau.deltax = deltax
     bateau.deltay = deltay
 
-    # Tout ceci est pour réglé le problème avec la division par 0, et le problème de signe. La fonction atan2 [ help(atan2) ] gère tout ceci
+    # Tout ceci est pour régler le problème avec la division par 0, et le problème de signe. La fonction atan2 [ help(atan2) ] gère tout ceci
     # if deltax == 0:
     #     if deltay == 0:
     #         dtheta = 0
@@ -144,6 +150,15 @@ def update_ship_with_Fext(bateau,dt,_lambda,orientation_absolue_force,amplitude_
     dtheta = math.atan2(deltay,deltax) # Renvoie arctan(dy/dx) en prenant en compte la potentielle nullité de dx et le signe de dy
 
 
-    bateau.thetarad += dtheta # dtheta en radian
-    bateau.thetadeg += math.degrees(dtheta) # en degré
+    bateau.thetarad = dtheta # dtheta en radian
+    if bateau.thetarad > 2*math.pi :
+        bateau.thetarad -= 2*math.pi # on garde l'angle en radian entre 0 et 2*pi
+    bateau.thetadeg = math.degrees(dtheta) # en degré
+    if bateau.thetadeg > 360 :
+        bateau.thetadeg -= 360 # on garde l'angle en degré entre 0 et 360
+
+
+    print("Orientation en degré :", bateau.thetadeg)
+    print("Orientation en radian :", bateau.thetarad)
+
 

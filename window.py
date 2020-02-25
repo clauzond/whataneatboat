@@ -52,42 +52,55 @@ def create_parametres():
     par_canvas.pack(fill=BOTH,expand=1)
 
 
+
+    Label_1=Label(par_canvas,font="Constantia 18",text="Valeur de LAMBDA (en kg.s-1)")
+    Label_1.pack(fill=X,padx=10,pady=10)
     var_1=IntVar()
-    var_1.set("VARIABLE 1")
+    var_1.set("200")
     Champ_1=Entry(par_canvas,textvariable=var_1,font="Constantia 18",width=10)
-    Champ_1.pack(fill=X,padx=20,pady=20)
+    Champ_1.pack(fill=X,padx=10,pady=10)
 
+
+
+    Label_2=Label(par_canvas,font="Constantia 18",text="Valeur de AMPLITUDE FORCE (en N ou kg.m.s-2)")
+    Label_2.pack(fill=X,padx=10,pady=10)
     var_2=IntVar()
-    var_2.set("VARIABLE 2")
+    var_2.set("1000")
     Champ_2=Entry(par_canvas,textvariable=var_2,font="Constantia 18",width=10)
-    Champ_2.pack(fill=X,padx=20,pady=20)
+    Champ_2.pack(fill=X,padx=10,pady=10)
 
+    Label_3=Label(par_canvas,font="Constantia 18",text="Valeur de MASSE BATEAU (en kg)")
+    Label_3.pack(fill=X,padx=10,pady=10)
     var_3=IntVar()
-    var_3.set("VARIABLE 3")
+    var_3.set("1000")
     Champ_3=Entry(par_canvas,textvariable=var_3,font="Constantia 18",width=10)
-    Champ_3.pack(fill=X,padx=20,pady=20)
+    Champ_3.pack(fill=X,padx=10,pady=10)
 
     var_4=IntVar()
     var_4.set("VARIABLE 4")
     Champ_4=Entry(par_canvas,textvariable=var_4,font="Constantia 18",width=10)
-    Champ_4.pack(fill=X,padx=20,pady=20)
+    Champ_4.pack(fill=X,padx=10,pady=10)
 
     var_5=IntVar()
     var_5.set("VARIABLE 5")
     Champ_5=Entry(par_canvas,textvariable=var_5,font="Constantia 18",width=10)
-    Champ_5.pack(fill=X,padx=20,pady=20)
+    Champ_5.pack(fill=X,padx=10,pady=10)
 
     var_6=IntVar()
     var_6.set("VARIABLE 6")
     Champ_6=Entry(par_canvas,textvariable=var_6,font="Constantia 18",width=10)
-    Champ_6.pack(fill=X,padx=20,pady=20)
+    Champ_6.pack(fill=X,padx=10,pady=10)
 
 
-    bouton_1=Button(par_canvas,text="bouton 1",font="Constantia 15",justify="center",overrelief="groove",activeforeground="blue",activebackground="white",bg="white",command=create_parametres)
-    bouton_1.pack(fill=BOTH,padx=20,pady=20)
+    bouton_1=Button(par_canvas,text="bouton 1",font="Constantia 15",justify="center",overrelief="groove",activeforeground="blue",activebackground="white",bg="white",command=get_parametre)
+    bouton_1.pack(fill=BOTH,padx=10,pady=10)
 
     par_window.mainloop()
 
+def get_parametre():
+    global var_1,var_2,var_3,var_4,var_5,var_6
+
+    print(var_1.get(),var_2.get())
 
 ## Fenêtre de l'environnement [fenêtre et autre]
 
@@ -117,19 +130,8 @@ def create_environnement():
 
     env_canvas.pack()
 
-    #env_canvas.bind("<Button-1>", press)
-    #env_canvas.bind("<B1-Motion>", motion)
 
 
-    #env_canvas.bind('<Button-1>',clicksouris)
-
-   #
-   #  env_canvas.bind('<KeyPress-Left>',move_left)
-   #  env_canvas.bind('<KeyPress-Right>',move_right)
-
-   #   env_canvas.bind('<KeyRelease-Up>',release)
-   #  env_canvas.bind('<KeyRelease-Left>',release)
-   #  env_canvas.bind('<KeyRelease-Right>',release)
 
 
 
@@ -176,56 +178,56 @@ def popup(event):
 # ACTUELLEMENT :
 # Ce bouton démarre la loop du temps
 def start_loop():
-    global state_loop
-    if state_loop==False:
+    global loop_state
+    if loop_state==False:
         try:
             print("Loop démarrée")
             envmenu.entryconfig(2, label="Loop : ON")
             envbutton2.config(text="Loop : ON")
             env_canvas.config()
-            state_loop=True
+            loop_state=True
             loop()
         except:
             print("Environnement pas démarré !")
-            state_loop=False
+            loop_state=False
     else:
         envmenu.entryconfig(2,label="Loop : OFF")
         envbutton2.config(text="Loop : OFF")
-        state_loop=False
+        loop_state=False
 
 def move_event(event):
     if event.keysym == 'Up':
-        move_front()
+        manual_move_front()
     elif event.keysym == 'Left':
-        move_left()
+        manual_move_left()
     elif event.keysym == 'Right':
-        move_right()
+        manual_move_right()
 def release(event):
     if event.keysym in ['Up','Left','Right']:
 
         for bateau in totalships.ShipList:
-            bateau.state_ForceExist = False
-            bateau.state_ForceRadAngle = 0
+            bateau.manual_ForceExist = False
+            bateau.manual_ForceRadAngle = 0
         print("RELEASE")
 
 
-def move_front():
+def manual_move_front():
     for bateau in totalships.ShipList :
-        bateau.state_ForceExist = True
-        bateau.state_ForceRadAngle = 0
-    print("FRONT")
+        bateau.manual_ForceExist = True
+        bateau.manual_ForceRadAngle = 0
+    #print("FRONT")
 
-def move_left():
+def manual_move_left():
     for bateau in totalships.ShipList :
-        bateau.state_ForceExist = True
-        bateau.state_ForceRadAngle = -(math.pi)/2
-    print("LEFT")
+        bateau.manual_ForceExist = True
+        bateau.manual_ForceRadAngle = -(math.pi)/2
+    #print("LEFT")
 
-def move_right():
+def manual_move_right():
     for bateau in totalships.ShipList :
-        bateau.state_ForceExist = True
-        bateau.state_ForceRadAngle = (math.pi)/2
-    print("RIGHT")
+        bateau.manual_ForceExist = True
+        bateau.manual_ForceRadAngle = +(math.pi)/2
+    #print("RIGHT")
 
 
 
@@ -258,17 +260,20 @@ def create_ship_on_canvas(canvas,x,y,shipnumber):
 
 
 # 1 pixel = 1 mètre puisqu'on manipule tout en mètre, et qu'on déplace le bateau selon "bateau.deltax" qui est en mètre aussi
-# update_envrionnement sera la fonction qui modifie l'état du système entier pendant "dt"
-def update_environnement(totalships,canvas,_lambda,dt):
+# update_environnement sera la fonction qui modifie l'état du système entier pendant "dt"
+
+
+# manual_update_environnement est une fonction pour TESTER nos déplacements de TOUS LES BATEAUX EN MEME TEMPS
+# Il donne le MEME ORDRE à TOUS LES BATEAUX !
+def manual_update_environnement(totalships,canvas,_lambda,dt):
 
 
 
     for bateau in totalships.ShipList :
 
-        if bateau.state_ForceExist == True:
-            # On applique les changements à faire, en considérant que la force du moteur EXISTE, d'angle relatif bateau.state_ForceRadAngle et d'amplitude bateau.state_ForceAmplitude
-            equation.update_ship_with_Fext(bateau,dt,_lambda,bateau.state_ForceRadAngle,bateau.state_ForceAmplitude)
-            print("forceexist")
+        if bateau.manual_ForceExist == True:
+            # On applique les changements à faire, en considérant que la force du moteur EXISTE, d'angle relatif bateau.manual_ForceRadAngle et d'amplitude bateau.manual_ForceAmplitude
+            equation.update_ship_with_Fext(bateau,dt,_lambda,bateau.manual_ForceRadAngle,bateau.manual_ForceAmplitude)
         else:
             # On applique les changements à faire, en considérant que le bateau n'applique AUCUNE FORCE DE MOTEUR
             equation.update_ship_without_Fext(bateau,dt,_lambda)
@@ -281,21 +286,51 @@ def update_environnement(totalships,canvas,_lambda,dt):
 
     totalships.time_since_begin += dt
 
+dt = 0.01 # en s, correspond à l'unité infinitésimale de temps sur laquelle on calcule toutes les valeurs. Au plus elle est petite, au plus les calculs sont précis.
+dt_ms_loop = 1 # en ms, correspond au temps que l'on met pour afficher "dt" grâce à la fonction .after(dt_ms_loop,#args) ; le temps passera bien plus vite si dt_ms_loop > dt
 
-dt = 0.01 #(10 ms)
-_lambda = 200
-state_loop=False
+
+_lambda = 50
+loop_state=False
+
+# On peut choisir d'avoir un dt_ms_loop bien plus petit que dt pour accélérer le temps
+# le facteur d'accélération de temps est alors [dt_ms_loop / dt] (en mettant les bonnes unités !)
 def loop():
-    global state_loop
-    update_environnement(totalships,env_canvas,_lambda,dt)
+    global loop_state
+    manual_update_environnement(totalships,env_canvas,_lambda,dt)
 
-    if state_loop == True :
-        env_canvas.after(10,loop)
+    if loop_state == True :
+        env_canvas.after(dt_ms_loop,loop)
     else:
         print("Loop arrêtée")
 
 
 
+# global_update_environnement donne UN ORDRE INDIVIDUEL à CHAQUE BATEAU pour la durée dt.
+# C'est cette fonction qui lancera "la demande" pour les paramètres à donner pour déplacer chaque bateau, pour lancer ensuite "individual_update"
+# C'est cette fonction qui déplacera les bateaux par la fonction .move après update, et +dt à totalships,time_since_begin
+def global_update_environnement(totalships,canvas,dt,_lambda):
+    """
+    totalships : élément de la classe TotalShips, qui correspond à notre flotte de bateau
+    canvas :
+    dt : l'unité infinitésimale de temps, qu'on pose égale à [...] ms
+    _lambda : variable expérimentale, correspond à la force de frottement en -lambda*v ; lambda en kg.s-1
+
+    """
+    return()
+
+# individual_update donne UN ORDRE à UN SEUL BATEAU pour la durée dt.
+# On peut identifier un bateau par son shipnumber (via totalships.ShipList[shipnumber]) ou encore par sa classe "Ship"
+# Cela outrepassera les touches "manuelles"
+def individual_update(bateau,ForceExist,):
+    """
+    bateau : élément de la classe Ship, qui correspond au bateau à déplacer
+    ForceExist : booléen, qui nous dit si la force existe ou non
+    ForceAmplitude : entier, donne l'amplitude de la force en N // potentiellement optionnel
+    ForceRadAngle: orientation absolue de la force, donc en bref 0 si tout droit, négatif tourner à gauche, positif tourner à droite  [voir equation.py pour plus d'explications]
+
+    """
+    return()
 
 
 
@@ -303,12 +338,16 @@ def loop():
 ## ENVIRONNEMENT CREATION
 
 # NumberOfShips sera défini ailleurs
-state_environnement = False
+environnement_state = False
 def start_environnement():
-    global totalships,state_environnement
+    """
+    totalships : élément de la classe TotalShips, qui correspond à notre flotte de bateau
+    environnement_state : booléen déclare l'état actuel de l'environnement ; True si démarré, False sinon
+    """
+    global totalships,environnement_state
 
-    if state_environnement == False:
-        state_environnement = True
+    if environnement_state == False:
+        environnement_state = True
         envbutton1.config(text="Ajouter un bateau")
         envmenu.entryconfigure(0,label="Ajouter un bateau")
         envbutton2.config(state=NORMAL)

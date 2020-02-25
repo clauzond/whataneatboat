@@ -11,6 +11,8 @@ _canvas = "vide"
 _x=0 # position initiale
 _y=0 # position initiale
 
+_forceamplitude = 3000
+
 # (Ré)Initialise l'environnement de bateaux
 
 class TotalShips :
@@ -66,7 +68,7 @@ class Ship :
             #coords = [(x,y),(x+10,y+10),(x+10,y),(x,y+10)]
             #self.polygon = canvas.create_polygon(coords,fill='red',outline='yellow',width=3)
 
-        
+
         self.polygon,self.label = window.create_ship_on_canvas(canvas,x,y,shipnumber)
 
         print("Le bateau n°",str(shipnumber),"a été créé")
@@ -92,9 +94,9 @@ class Ship :
         self.thetarad = anglerad
         self.thetadeg = math.degrees(anglerad)
 
-        self.state_ForceExist = False
-        self.state_ForceRadAngle = 0
-        self.state_ForceAmplitude = 100000 # norme de la force en N(ewton) = kg.m.s-2
+        self.manual_ForceExist = False
+        self.manual_ForceRadAngle = 0
+        self.manual_ForceAmplitude = _forceamplitude #norme de la force en N(ewton) = kg.m.s-2
 
 
 
