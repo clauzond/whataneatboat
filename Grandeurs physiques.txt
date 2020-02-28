@@ -1,0 +1,5 @@
+
+Unité de base tkinter en mètre : 1 "pixel" = 1 m [si on fait Polygone.move(+1,+1), il est déplacé de 1m vers le haut / 1m vers la droite ]
+Lambda : ... kg.s-1
+Masse bateau : 1000 kg
+Rayon bateau : 5 m

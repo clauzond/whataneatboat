@@ -177,6 +177,7 @@ def create_environnement():
 
 def popup(event):
     envmenu.post(event.x_root,event.y_root)
+    print(event.x,event.y)
 
 def reset():
     global environnement_state,loop_state,totalships
@@ -221,14 +222,17 @@ def move_event(event):
     if key_press_state == False :
         if event.keysym == 'Up':
             manual_move_front()
+            print("PRESS")
             key_press_state = True
         elif event.keysym == 'Left':
             manual_move_left()
+            print("PRESS")
             key_press_state = True
         elif event.keysym == 'Right':
             manual_move_right()
+            print("PRESS")
             key_press_state = True
-        print("PRESS")
+
 
 def release(event):
     global key_press_state
@@ -271,9 +275,6 @@ def manual_move_right():
 # http://tkinter.fdex.eu/doc/caw.html#ellipses-et-cercles pour "comment les coordonnées de l'ovale marche"
 # coin haut gauche (x0,y0) coin bas droite (x1,y1)
 def create_ship_on_canvas(canvas,x,y,shipnumber):
-    global coords
-
-
 
     coords = [(x-5,y-5),(x+5,y+5)]
     Polygon = canvas.create_oval(coords,fill='white',outline='red',width=1)
@@ -283,6 +284,15 @@ def create_ship_on_canvas(canvas,x,y,shipnumber):
     return(Polygon,Label)
 
 
+def create_obstacle_on_canvas(canvas,x,y,rayon,obstaclenumber):
+
+    coords = [(x-rayon,y-rayon),(x+rayon,y+rayon)]
+
+    Polygon = canvas.create_oval(coords,fill='gray',outline='orange',width=1)
+    Label = canvas.create_text(x,y,text=str(obstaclenumber),font="Helvetica 10")
+    canvas.update()
+
+    return(Polygon,Label)
 
 
 
@@ -295,7 +305,7 @@ def create_ship_on_canvas(canvas,x,y,shipnumber):
 
 # manual_update_environnement est une fonction pour TESTER nos déplacements de TOUS LES BATEAUX EN MEME TEMPS
 # Il donne le MEME ORDRE à TOUS LES BATEAUX !
-def manual_update_environnement(totalships,canvas,_lambda,dt):
+def manual_update_environnement(canvas,_lambda,dt):
 
 
 
@@ -313,6 +323,18 @@ def manual_update_environnement(totalships,canvas,_lambda,dt):
 
     totalships.time_since_begin += dt
 
+def manual_check_for_obstacles():
+
+    for bateau in totalships.ShipList :
+        if totalobstacles.is_colliding(bateau.x,bateau.y):
+            if totalobstacles.LastObstacleCollision != bateau.LastObstacleCollision :
+                print("Le bateau n°",bateau.shipnumber,"est en collision avec l'obstacle n°",totalobstacles.LastObstacleCollision)
+                bateau.LastObstacleCollision = totalobstacles.LastObstacleCollision
+        else:
+            bateau.LastObstacleCollision = (-1)
+
+
+
 dt = 0.01 # en s, correspond à l'unité infinitésimale de temps sur laquelle on calcule toutes les valeurs. Au plus elle est petite, au plus les calculs sont précis.
 dt_ms_loop = 1 # en ms, correspond au temps que l'on met pour afficher "dt" grâce à la fonction .after(dt_ms_loop,#args) ; le temps passera bien plus vite si dt_ms_loop > dt
 
@@ -324,7 +346,8 @@ loop_state=False
 # le facteur d'accélération de temps est alors [dt_ms_loop / dt] (en mettant les bonnes unités !)
 def loop():
     global loop_state
-    manual_update_environnement(totalships,env_canvas,_lambda,dt)
+    manual_update_environnement(env_canvas,_lambda,dt)
+    manual_check_for_obstacles()
 
     if loop_state == True :
         env_canvas.after(dt_ms_loop,loop)
@@ -370,8 +393,9 @@ def start_environnement():
     """
     totalships : élément de la classe TotalShips, qui correspond à notre flotte de bateau
     environnement_state : booléen déclare l'état actuel de l'environnement ; True si démarré, False sinon
+    totalobstacles : élément de la classe TotalObstacles, qui correspond à nos obstacles
     """
-    global totalships,environnement_state
+    global totalships,environnement_state,totalobstacles
 
     if environnement_state == False:
         environnement_state = True
@@ -384,13 +408,36 @@ def start_environnement():
 
         totalships = ship.TotalShips(env_canvas)
 
+        totalobstacles = ship.TotalObstacles(env_canvas)
+        create_walls()
+
         for k in range(0,NumberOfShips):
-            print("Bateau en création")
             totalships.addship(env_canvas)
 
     else:
         totalships.addship(env_canvas)
 
+
+def create_walls():
+    global totalobstacles
+
+    # Format :
+    #mur = [x,y,rayon]
+    mur0 = [50,50,5]
+    mur1 = [500,50,6]
+    mur2 = [357,783,17]
+    mur3 = [216,528,9]
+    mur4 = [193,739,13]
+    mur5 = [927,128,7]
+    mur6 = [276,629,6]
+    mur7 = [114,893,6]
+
+    murs_a_creer = [mur0,mur1,mur2,mur3,mur4,mur5,mur6,mur7]
+
+
+    for k in range(0,len(murs_a_creer)):
+        totalobstacles.addobstacle(murs_a_creer[k][0],murs_a_creer[k][1],murs_a_creer[k][2])
+        print("L'obstacle n°",k,"a été créé")
 
 
 

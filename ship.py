@@ -14,17 +14,84 @@ _y=0 # position initiale
 _forceamplitude = 3000
 
 
-class Mur :
+class TotalObstacles :
+    def __init__(self,canvas):
+        self.canvas = canvas
+        self.ObstacleList = []
+        self.NextObstacleNumber = 0
 
-    def __init__(self):
-        return()
+        self.LastObstacleCollision = (-1)
 
-    def __reptr__(self):
+    def __repr__(self):
 
         attrs = vars(self)
 
         return('\n'.join("%s: %s" % item for item in attrs.items()))
 
+    def addobstacle(self,x,y,rayon):
+
+        obstacle = Obstacle(self.canvas,x,y,rayon,self.NextObstacleNumber)
+        self.ObstacleList.append(obstacle)
+        self.NextObstacleNumber += 1
+
+    def is_near(self,x,y,incertitude):
+        """ Détermine si un point donné par (x,y) est "près" de n'importe quel obstacle, càd s'il est dans un rayon [rayon + incertitude] d'un obstacle
+        """
+        for obstacle in self.ObstacleList:
+            if obstacle.is_near(x,y,incertitude):
+                self.LastObstacleCollision = obstacle.obstaclenumber
+                return(True)
+        return(False)
+
+    def is_colliding(self,x,y):
+        """ Détermine si un point donné par (x,y) est DANS n'importe quel l'obstacle, càd s'il est dans un rayon [rayon] de l'obstacle
+        """
+        return(self.is_near(x,y,0))
+
+class Obstacle :
+
+    def __init__(self,canvas,x,y,rayon,obstaclenumber):
+        """ Initialisation d'un obstacle
+        canvas
+        emplacement (x,y) du centre de l'obstacle
+        rayon de l'obstacle
+        numéro de l'obstacle (pour le numéroter dans la liste et sur le canvas
+        """
+
+        self.canvas = canvas
+
+        self.polygon,self.label = window.create_obstacle_on_canvas(canvas,x,y,rayon,obstaclenumber)
+
+        self.x = x
+        self.y = y
+
+        self.rayon = rayon
+        self.obstaclenumber = obstaclenumber
+
+        self.LastObstacleCollision = (-1)
+
+    def __repr__(self):
+
+        attrs = vars(self)
+
+        return('\n'.join("%s: %s" % item for item in attrs.items()))
+
+
+    def is_near(self,x,y,incertitude):
+        """ Détermine si un point donné par (x,y) est "près" de l'obstacle, càd s'il est dans un rayon [rayon + incertitude] de l'obstacle
+        """
+        rayon_complet = self.rayon + incertitude
+
+        if ((self.x - rayon_complet) <= x <= (self.x + rayon_complet)) and ((self.y - rayon_complet) <= y <= (self.y + rayon_complet)):
+            return(True)
+
+        return(False)
+
+
+    def is_colliding(self,x,y):
+        """ Détermine si un point donné par (x,y) est DANS l'obstacle, càd s'il est dans un rayon [rayon] de l'obstacle
+        """
+        return(self.is_near(x,y,0))
 
 # (Ré)Initialise l'environnement de bateaux
 class TotalShips :
@@ -109,6 +176,9 @@ class Ship :
         self.manual_ForceExist = False
         self.manual_ForceRadAngle = 0
         self.manual_ForceAmplitude = _forceamplitude #norme de la force en N(ewton) = kg.m.s-2
+
+
+        self.LastObstacleCollision = (-1)
 
 
 
