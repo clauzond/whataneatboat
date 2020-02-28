@@ -158,7 +158,3 @@ def update_ship_with_Fext(bateau,dt,_lambda,orientation_absolue_force,amplitude_
         bateau.thetadeg -= 360 # on garde l'angle en degré entre 0 et 360
 
 
-    print("Orientation en degré :", bateau.thetadeg)
-    print("Orientation en radian :", bateau.thetarad)
-
-

@@ -13,8 +13,20 @@ _y=0 # position initiale
 
 _forceamplitude = 3000
 
-# (Ré)Initialise l'environnement de bateaux
 
+class Mur :
+
+    def __init__(self):
+        return()
+
+    def __reptr__(self):
+
+        attrs = vars(self)
+
+        return('\n'.join("%s: %s" % item for item in attrs.items()))
+
+
+# (Ré)Initialise l'environnement de bateaux
 class TotalShips :
 
 
@@ -88,7 +100,7 @@ class Ship :
         self.y=y
 
         self.deltax = 0
-        self.detaly = 0
+        self.deltay = 0
 
 
         self.thetarad = anglerad

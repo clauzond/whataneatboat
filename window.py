@@ -149,6 +149,9 @@ def create_environnement():
     envmenu.add_command(label="Démarrer l'environnement",command=start_environnement)
     envmenu.add_separator()
     envmenu.add_command(label="Loop : OFF",command=start_loop,state=DISABLED)
+    envmenu.add_separator()
+    envmenu.add_command(label="RESET ENVIRONNEMENT",command=reset)
+
 
 
     menubar.add_cascade(label="Environnement",menu=envmenu)
@@ -175,6 +178,23 @@ def create_environnement():
 def popup(event):
     envmenu.post(event.x_root,event.y_root)
 
+def reset():
+    global environnement_state,loop_state,totalships
+    environnement_state = False
+    loop_state=False
+    envbutton1.config(text="Démarrer l'environnement")
+    envmenu.entryconfigure(0,label="Démarrer l'environnement")
+    envbutton2.config(state=DISABLED)
+    envmenu.entryconfigure(2,state=DISABLED)
+
+    envmenu.entryconfig(2, label="Loop : OFF")
+    envbutton2.config(text="Loop : OFF")
+
+    env_canvas.delete("all")
+
+    print("Reset effectué")
+
+
 # ACTUELLEMENT :
 # Ce bouton démarre la loop du temps
 def start_loop():
@@ -184,31 +204,41 @@ def start_loop():
             print("Loop démarrée")
             envmenu.entryconfig(2, label="Loop : ON")
             envbutton2.config(text="Loop : ON")
-            env_canvas.config()
             loop_state=True
             loop()
         except:
-            print("Environnement pas démarré !")
+            print("Environnement pas démarré ! Un problème a été rencontré dans [loop()]")
             loop_state=False
     else:
         envmenu.entryconfig(2,label="Loop : OFF")
         envbutton2.config(text="Loop : OFF")
         loop_state=False
 
-def move_event(event):
-    if event.keysym == 'Up':
-        manual_move_front()
-    elif event.keysym == 'Left':
-        manual_move_left()
-    elif event.keysym == 'Right':
-        manual_move_right()
-def release(event):
-    if event.keysym in ['Up','Left','Right']:
 
-        for bateau in totalships.ShipList:
-            bateau.manual_ForceExist = False
-            bateau.manual_ForceRadAngle = 0
-        print("RELEASE")
+key_press_state = False
+def move_event(event):
+    global key_press_state
+    if key_press_state == False :
+        if event.keysym == 'Up':
+            manual_move_front()
+            key_press_state = True
+        elif event.keysym == 'Left':
+            manual_move_left()
+            key_press_state = True
+        elif event.keysym == 'Right':
+            manual_move_right()
+            key_press_state = True
+        print("PRESS")
+
+def release(event):
+    global key_press_state
+    if key_press_state == True :
+        if event.keysym in ['Up','Left','Right']:
+            for bateau in totalships.ShipList:
+                bateau.manual_ForceExist = False
+                bateau.manual_ForceRadAngle = 0
+            print("RELEASE")
+            key_press_state = False
 
 
 def manual_move_front():
@@ -220,13 +250,13 @@ def manual_move_front():
 def manual_move_left():
     for bateau in totalships.ShipList :
         bateau.manual_ForceExist = True
-        bateau.manual_ForceRadAngle = -(math.pi)/2
+        bateau.manual_ForceRadAngle = -0.8*(math.pi)/2
     #print("LEFT")
 
 def manual_move_right():
     for bateau in totalships.ShipList :
         bateau.manual_ForceExist = True
-        bateau.manual_ForceRadAngle = +(math.pi)/2
+        bateau.manual_ForceRadAngle = +0.8*(math.pi)/2
     #print("RIGHT")
 
 
@@ -280,9 +310,6 @@ def manual_update_environnement(totalships,canvas,_lambda,dt):
 
         canvas.move(bateau.polygon,bateau.deltax,bateau.deltay)
         canvas.move(bateau.label,bateau.deltax,bateau.deltay)
-
-
-
 
     totalships.time_since_begin += dt
 
@@ -363,6 +390,10 @@ def start_environnement():
 
     else:
         totalships.addship(env_canvas)
+
+
+
+
 
 
 ## Tests pour exécuter le fichier.

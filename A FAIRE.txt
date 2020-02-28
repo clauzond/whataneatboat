@@ -1,20 +1,26 @@
-(passé) Bug : j'ai l'impression que "start_environment" et "addship(canvas)" ne font pas ce qu'il devrait. Regarder pourquoi aucun polygon n'est créé
-
-Bug : Il faut redémarrer entièrement le .py si on veut fermer/redémarrer l'environnement (sûrement dû au fait qu'on change la fonction de "Démarrer environnement")
-
-Note : quand on exécuter une fonction qui est dans un autre fichier (ex : on se trouve dans ship, et on appelle window.fonction) on ne peut pas accéder aux fonctions globales de l'autre fichier (ex : de window)
-Exemple typique : cliquer sur un bouton [donc dans window] qui appelle une fonction de ship, qui elle-même appelle une fonction de window. On ne peut pas accéder aux variables globales de window.
-Solution : accéder aux variables globales uniquement dans window, et pas ailleurs. Si on veut y accéder ailleurs, on envoie les variables globales depuis window à ailleurs.
-
------
-TO-DO LIST :
-
-• Regarder quelle valeur de _lambda est réaliste ; regarde quelle valeur de l'amplitude de la force du moteur est réaliste [A FAIRE, EXPERIMENTALEMENT]
-• Implanter correctement les rotations [FAIT !!!]
-• Faire en sorte que chaque bateau soit update, puis qu'on puisse les "déplacer" indépendemment l'un de l'autre [FAIT]
-• Décider de l'orientation possible pour tourner (potentiellement choisie, on verra après l'implémentation de NEAT)
-• Faire en sorte qu'une fonction puisse manipuler à sa guise les bateaux, prenant en compte SEULEMENT le numéro de chaque bateau. Ce sera une sorte de "update environnement", mais en modifiant 1 bateau à la fois, avec des amplitudes indépendantes...
-
-
-
-https://stackoverflow.com/questions/3408779/how-to-rotate-a-polygon-on-a-tkinter-canvas
+(passé) Bug : j'ai l'impression que "start_environment" et "addship(canvas)" ne font pas ce qu'il devrait. Regarder pourquoi aucun polygon n'est créé 
+ 
+Bug : Il faut redémarrer entièrement le .py si on veut fermer/redémarrer l'environnement (sûrement dû au fait qu'on change la fonction de "Démarrer environnement") 
+Problème d'ajout de bateaux en milieu de loop ? (à partir de 5, bug ?) 
+ 
+Note : quand on exécuter une fonction qui est dans un autre fichier (ex : on se trouve dans ship, et on appelle window.fonction) on ne peut pas accéder aux fonctions globales de l'autre fichier (ex : de window) 
+Exemple typique : cliquer sur un bouton [donc dans window] qui appelle une fonction de ship, qui elle-même appelle une fonction de window. On ne peut pas accéder aux variables globales de window. 
+Solution : accéder aux variables globales uniquement dans window, et pas ailleurs. Si on veut y accéder ailleurs, on envoie les variables globales depuis window à ailleurs. 
+ 
+----- 
+TO-DO LIST : 
+ 
+(pas de suite ; plus tard) 
+• Regarder quelle valeur de _lambda est réaliste ; regarde quelle valeur de l'amplitude de la force du moteur est réaliste [A FAIRE, EXPERIMENTALEMENT] 
+• Décider de l'orientation possible pour tourner (potentiellement choisie, on verra après l'implémentation de NEAT) 
+ 
+(maintenant) 
+• Faire en sorte qu'une fonction puisse manipuler à sa guise les bateaux, prenant en compte SEULEMENT le numéro de chaque bateau. Ce sera une sorte de "update environnement", mais en modifiant 1 bateau à la fois, avec des amplitudes indépendantes... 
+• Pourquoi les bateaux sont très lents quand il y a en 15+ ? 
+ 
+(fini) 
+• Implanter correctement les rotations [FAIT] 
+• Faire en sorte que chaque bateau soit update, puis qu'on puisse les "déplacer" indépendemment l'un de l'autre [FAIT] 
+ 
+ 
+https://stackoverflow.com/questions/3408779/how-to-rotate-a-polygon-on-a-tkinter-canvas 
