@@ -78,9 +78,9 @@ def update_ship_without_Fext(bateau,dt,_lambda):
     bateau.thetarad = dtheta # dtheta en radian
     if bateau.thetarad > 2*math.pi :
         bateau.thetarad -= 2*math.pi # on garde l'angle en radian entre 0 et 2*pi
+    elif bateau.thetarad < 0:
+        bateau.thetarad += 2*math.pi
     bateau.thetadeg = math.degrees(dtheta) # en degré
-    if bateau.thetadeg > 360 :
-        bateau.thetadeg -= 360 # on garde l'angle en degré entre 0 et 360
 
 
 
@@ -153,8 +153,46 @@ def update_ship_with_Fext(bateau,dt,_lambda,orientation_absolue_force,amplitude_
     bateau.thetarad = dtheta # dtheta en radian
     if bateau.thetarad > 2*math.pi :
         bateau.thetarad -= 2*math.pi # on garde l'angle en radian entre 0 et 2*pi
+    elif bateau.thetarad < 0:
+        bateau.thetarad += 2*math.pi
     bateau.thetadeg = math.degrees(dtheta) # en degré
-    if bateau.thetadeg > 360 :
-        bateau.thetadeg -= 360 # on garde l'angle en degré entre 0 et 360
 
 
+def reaction_bateau_obstacle(bateau,dt,_lambda):
+    """
+    Simule la réaction d'un bateau lors qu'il entre en collision avec un obstacle
+    "Renvoie le bateau avec une force proportionnelle à sa vitesse, dans une direction opposée à celle d'arrivée"
+
+    bateau : variable de la classe Ship, correspond à 1 bateau donné
+    dt : l'unité infinitésimale de temps, qu'on pose égale à [...] ms
+    _lambda : variable expérimentale, correspond à la force de frottement en -lambda*v ; lambda en kg.s-1
+    RadAngleCollision : voir un schéma pour mieux se représenter, on a pris une orientation anti-trigo pour s'accorder à tkinter
+        -> si = 0, tout droit [par rapport à la direction actuelle du bateau]
+        -> si positive, signifie tourner à droite [par rapport à la direction actuelle du bateau]
+        -> si négative, signifie tourner à gauche [par rapport à la direction actuelle du bateau]
+        si tu es confus, teste pour theta=0 et orientation_absolue_force=pi/2, et voit que cela tourne bien vers la droite
+    amplitude_force : Fext = F*cos(theta + orientation_absolue_force )*ux  +  F*sin(theta + orientation_absolue_force)*uy
+        où F est amplitude_force en Newton
+        où theta = bateau.thetarad l'orientation actuelle du bateau, s'il veut aller tout droit force dirigée vers ur par exemple.
+
+    L est une constante, le bateau sera renvoyée avec une force proportionnelle à sa vitesse
+    """
+
+    RadAngleCollision = bateau.LastCollisionRadAngle
+    norme_vitesse = math.sqrt( (bateau.speedx)**2 + (bateau.speedy)**2 )
+    bateau.speedx = 0
+    bateau.speedy = 0
+    L = 100
+    """new_angle = (RadAngleCollision + math.pi)
+    if new_angle > 2*math.pi:
+        new_angle -= 2*math.pi
+    elif new_angle < 0:
+        new_angle += 2*math.pi"""
+
+    new_angle = math.pi
+
+    new_force = L * (_lambda * norme_vitesse)
+    print("Angle de réaction :",new_angle)
+    print("Force de réaction :",new_force)
+    print("Force_amplitude bateau:",bateau.manual_ForceAmplitude)
+    update_ship_with_Fext(bateau,dt,_lambda,new_angle,new_force)

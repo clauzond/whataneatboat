@@ -13,10 +13,13 @@ TO-DO LIST :
 (pas de suite ; plus tard) 
 • Regarder quelle valeur de _lambda est réaliste ; regarde quelle valeur de l'amplitude de la force du moteur est réaliste [A FAIRE, EXPERIMENTALEMENT] 
 • Décider de l'orientation possible pour tourner (potentiellement choisie, on verra après l'implémentation de NEAT) 
- 
+
+
 (maintenant) 
 • Faire en sorte qu'une fonction puisse manipuler à sa guise les bateaux, prenant en compte SEULEMENT le numéro de chaque bateau. Ce sera une sorte de "update environnement", mais en modifiant 1 bateau à la fois, avec des amplitudes indépendantes... 
 • Pourquoi les bateaux sont très lents quand il y a en 15+ ? 
+	-> tenter d'enlever les ".move" ou de les faire moins régulièrement pour voir le temps d'exécution
+	-> si cela ne marche pas, import time et chronométrer toutes les fonctions
  
 (fini) 
 • Implanter correctement les rotations [FAIT] 

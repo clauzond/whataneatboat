@@ -179,6 +179,7 @@ class Ship :
 
 
         self.LastObstacleCollision = (-1)
+        self.LastCollisionRadAngle = 0
 
 
 

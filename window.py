@@ -3,6 +3,7 @@ from tkinter import *
 
 import equation
 import ship
+import time
 
 #global env_canvas
 
@@ -25,7 +26,7 @@ def create_window():
     #Resoudre=Button(main_canvas,text="Résoudre",font="Constantia 15",justify="center",overrelief="groove",activeforeground="blue",activebackground="white",bg="white",command=BoutonResoudre)
     #Resoudre.grid(row=##,column=##,rowspan=1,columnspan=1,padx=10,pady=10)
 
-    bouton_environnement=Button(main_canvas,text="Environnement",font="Constantia 15",justify="center",overrelief="groove",activeforeground="blue",activebackground="white",bg="white",command=create_environnement)
+    bouton_environnement=Button(main_canvas,text="Environnement",font="Constantia 15",justify="center",overrelief="groove",activeforeground="blue",activebackground="white",bg="white",command=create_canvas_environnement)
     bouton_environnement.pack(fill=X,padx=50,pady=50)
 
     bouton_parametres=Button(main_canvas,text="Paramètres",font="Constantia 15",justify="center",overrelief="groove",activeforeground="blue",activebackground="white",bg="white",command=create_parametres)
@@ -105,7 +106,7 @@ def get_parametre():
 ## Fenêtre de l'environnement [fenêtre et autre]
 
 
-def create_environnement():
+def create_canvas_environnement():
     global env_canvas,envmenu,envbutton1,envbutton2
 
     env_window = Toplevel()
@@ -158,7 +159,7 @@ def create_environnement():
 
     # Affichage pulldown menu
     affmenu = Menu(menubar, tearoff=1)
-    affmenu.add_command(label="Option affichage 1")
+    affmenu.add_command(label="Informations sur le temps",command=test)
     affmenu.add_separator()
     affmenu.add_command(label="Option affichage 2")
 
@@ -306,38 +307,49 @@ def create_obstacle_on_canvas(canvas,x,y,rayon,obstaclenumber):
 # manual_update_environnement est une fonction pour TESTER nos déplacements de TOUS LES BATEAUX EN MEME TEMPS
 # Il donne le MEME ORDRE à TOUS LES BATEAUX !
 def manual_update_environnement(canvas,_lambda,dt):
+    take_time()
+    # for bateau in totalships.ShipList :
+
+    #       if bateau.manual_ForceExist == True:
+    #         # On applique les changements à faire, en considérant que la force du moteur EXISTE, d'angle relatif bateau.manual_ForceRadAngle et d'amplitude bateau.manual_ForceAmplitude
+    #         equation.update_ship_with_Fext(bateau,dt,_lambda,bateau.manual_ForceRadAngle,bateau.manual_ForceAmplitude)
+    #     else:
+    #         # On applique les changements à faire, en considérant que le bateau n'applique AUCUNE FORCE DE MOTEUR
+    #         equation.update_ship_without_Fext(bateau,dt,_lambda)
+
+    #       canvas.move(bateau.polygon,bateau.deltax,bateau.deltay)
+    #     canvas.move(bateau.label,bateau.deltax,bateau.deltay)
+    #
+
+    for bateau in totalships.ShipList:
+        individual_update(bateau,bateau.manual_ForceExist,bateau.manual_ForceAmplitude,bateau.manual_ForceRadAngle)
 
 
 
-    for bateau in totalships.ShipList :
-
-        if bateau.manual_ForceExist == True:
-            # On applique les changements à faire, en considérant que la force du moteur EXISTE, d'angle relatif bateau.manual_ForceRadAngle et d'amplitude bateau.manual_ForceAmplitude
-            equation.update_ship_with_Fext(bateau,dt,_lambda,bateau.manual_ForceRadAngle,bateau.manual_ForceAmplitude)
-        else:
-            # On applique les changements à faire, en considérant que le bateau n'applique AUCUNE FORCE DE MOTEUR
-            equation.update_ship_without_Fext(bateau,dt,_lambda)
-
-        canvas.move(bateau.polygon,bateau.deltax,bateau.deltay)
-        canvas.move(bateau.label,bateau.deltax,bateau.deltay)
-
-    totalships.time_since_begin += dt
-
-def manual_check_for_obstacles():
-
+def global_check_for_obstacles():
     for bateau in totalships.ShipList :
         if totalobstacles.is_colliding(bateau.x,bateau.y):
             if totalobstacles.LastObstacleCollision != bateau.LastObstacleCollision :
                 print("Le bateau n°",bateau.shipnumber,"est en collision avec l'obstacle n°",totalobstacles.LastObstacleCollision)
+                print("Il a tapé l'obstacle avec un angle de",bateau.thetarad)
                 bateau.LastObstacleCollision = totalobstacles.LastObstacleCollision
+                bateau.LastCollisionRadAngle = bateau.thetarad
+
+
+                equation.reaction_bateau_obstacle(bateau,dt,_lambda)
+                env_canvas.move(bateau.polygon,bateau.deltax,bateau.deltay)
+                env_canvas.move(bateau.label,bateau.deltax,bateau.deltay)
         else:
             bateau.LastObstacleCollision = (-1)
+            bateau.LastCollisionRadAngle = (-4000)
 
 
 
-dt = 0.01 # en s, correspond à l'unité infinitésimale de temps sur laquelle on calcule toutes les valeurs. Au plus elle est petite, au plus les calculs sont précis.
-dt_ms_loop = 1 # en ms, correspond au temps que l'on met pour afficher "dt" grâce à la fonction .after(dt_ms_loop,#args) ; le temps passera bien plus vite si dt_ms_loop > dt
 
+
+dt = 0.1 # en s, correspond à l'unité infinitésimale de temps sur laquelle on calcule toutes les valeurs. Au plus elle est petite, au plus les calculs sont précis.
+dt_ms_loop = 10 # en ms, correspond au temps que l'on met pour afficher "dt" grâce à la fonction .after(dt_ms_loop,#args) ; le temps passera bien plus vite si dt_ms_loop > dt
+facteur_dilatation = dt/(dt_ms_loop / 1000)
 
 _lambda = 50
 loop_state=False
@@ -346,15 +358,15 @@ loop_state=False
 # le facteur d'accélération de temps est alors [dt_ms_loop / dt] (en mettant les bonnes unités !)
 def loop():
     global loop_state
+    stock_time("in loop")
     manual_update_environnement(env_canvas,_lambda,dt)
-    manual_check_for_obstacles()
+    global_check_for_obstacles()
 
     if loop_state == True :
         env_canvas.after(dt_ms_loop,loop)
+        totalships.time_since_begin += dt
     else:
         print("Loop arrêtée")
-
-
 
 # global_update_environnement donne UN ORDRE INDIVIDUEL à CHAQUE BATEAU pour la durée dt.
 # C'est cette fonction qui lancera "la demande" pour les paramètres à donner pour déplacer chaque bateau, pour lancer ensuite "individual_update"
@@ -372,7 +384,7 @@ def global_update_environnement(totalships,canvas,dt,_lambda):
 # individual_update donne UN ORDRE à UN SEUL BATEAU pour la durée dt.
 # On peut identifier un bateau par son shipnumber (via totalships.ShipList[shipnumber]) ou encore par sa classe "Ship"
 # Cela outrepassera les touches "manuelles"
-def individual_update(bateau,ForceExist,):
+def individual_update(bateau,ForceExist,ForceAmplitude,ForceRadAngle):
     """
     bateau : élément de la classe Ship, qui correspond au bateau à déplacer
     ForceExist : booléen, qui nous dit si la force existe ou non
@@ -380,6 +392,15 @@ def individual_update(bateau,ForceExist,):
     ForceRadAngle: orientation absolue de la force, donc en bref 0 si tout droit, négatif tourner à gauche, positif tourner à droite  [voir equation.py pour plus d'explications]
 
     """
+    if ForceExist == True:
+    # On applique les changements à faire, en considérant que la force du moteur EXISTE, d'angle relatif bateau.manual_ForceRadAngle et d'amplitude bateau.manual_ForceAmplitude
+        equation.update_ship_with_Fext(bateau,dt,_lambda,ForceRadAngle,ForceAmplitude)
+    else:
+        # On applique les changements à faire, en considérant que le bateau n'applique AUCUNE FORCE DE MOTEUR
+        equation.update_ship_without_Fext(bateau,dt,_lambda)
+
+    env_canvas.move(bateau.polygon,bateau.deltax,bateau.deltay)
+    env_canvas.move(bateau.label,bateau.deltax,bateau.deltay)
     return()
 
 
@@ -395,9 +416,12 @@ def start_environnement():
     environnement_state : booléen déclare l'état actuel de l'environnement ; True si démarré, False sinon
     totalobstacles : élément de la classe TotalObstacles, qui correspond à nos obstacles
     """
-    global totalships,environnement_state,totalobstacles
+    global totalships,environnement_state,totalobstacles,time_begin
+
 
     if environnement_state == False:
+        time_begin = time.time()
+
         environnement_state = True
         envbutton1.config(text="Ajouter un bateau")
         envmenu.entryconfigure(0,label="Ajouter un bateau")
@@ -423,14 +447,14 @@ def create_walls():
 
     # Format :
     #mur = [x,y,rayon]
-    mur0 = [50,50,5]
-    mur1 = [500,50,6]
-    mur2 = [357,783,17]
-    mur3 = [216,528,9]
-    mur4 = [193,739,13]
-    mur5 = [927,128,7]
-    mur6 = [276,629,6]
-    mur7 = [114,893,6]
+    mur0 = [50,50,20]
+    mur1 = [500,50,20]
+    mur2 = [357,783,20]
+    mur3 = [216,528,20]
+    mur4 = [193,739,20]
+    mur5 = [927,128,20]
+    mur6 = [276,629,20]
+    mur7 = [114,893,20]
 
     murs_a_creer = [mur0,mur1,mur2,mur3,mur4,mur5,mur6,mur7]
 
@@ -446,5 +470,35 @@ def create_walls():
 ## Tests pour exécuter le fichier.
 # Ne pas mettre de choses nécessaires dessous, uniquement des éléments à tester.
 
+_time = 0
+maxx = 0
+def take_time():
+    global _time
+    _time = time.time()
+
+def stock_time(string):
+    global maxx
+    t = time.time()
+
+    diff = t - _time
+
+    if diff > 1000:
+        return()
+
+    if diff > maxx :
+        maxx = diff
+        print("New max :",maxx)
+
+
+def test():
+    diff = abs(time_begin - time.time())
+    print("Temps depuis le début (module time) :",diff)
+    print("Temps depuis le début (réel) :",totalships.time_since_begin)
+    print(totalships.time_since_begin/diff)
+    print("Facteur de dilatation réel :",facteur_dilatation)
+
+
+# Plus gros "maxx" croisé : 0.0312497615814209 s = 31 ms
+# "maxx" moyen croisé : 0.015908241271972656 = 16 ms
 
 #create_window()
