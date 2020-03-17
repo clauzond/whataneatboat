@@ -5,7 +5,8 @@ Problème d'ajout de bateaux en milieu de loop ? (à partir de 5, bug ?)
  
 Note : quand on exécuter une fonction qui est dans un autre fichier (ex : on se trouve dans ship, et on appelle window.fonction) on ne peut pas accéder aux fonctions globales de l'autre fichier (ex : de window) 
 Exemple typique : cliquer sur un bouton [donc dans window] qui appelle une fonction de ship, qui elle-même appelle une fonction de window. On ne peut pas accéder aux variables globales de window. 
-Solution : accéder aux variables globales uniquement dans window, et pas ailleurs. Si on veut y accéder ailleurs, on envoie les variables globales depuis window à ailleurs. 
+Solution : accéder aux variables globales uniquement dans window, et pas ailleurs. Si on veut y accéder ailleurs, on envoie les variables globales depuis window à ailleurs.
+[Explication tout en bas]
  
 ----- 
 TO-DO LIST : 
@@ -27,3 +28,34 @@ TO-DO LIST :
  
  
 https://stackoverflow.com/questions/3408779/how-to-rotate-a-polygon-on-a-tkinter-canvas 
+
+[Explication du problème des variables globales inter-module]
+(*** FICHIER : test1.py ***)
+import test2
+var=1
+def a1():
+    global var
+    var=10
+def c1():
+    print(var)
+	
+(*** FICHIER : test2.py ***)
+import test1
+def a2():
+    print(test1.var)
+def c2():
+    test1.c1()
+	
+(*** INPUT CONSOLE ***)
+> a1()
+"global var = 10"
+> c1()
+"print var = 10"
+> test2.a2()
+"print var = 1"
+> test2.c2()
+"print var = 1"
+
+CONCLUSION : On ne doit pas définir "var" quelque part.
+On utilise un fichier SEPARE (ex : main.py). On initialise dans main.py "test1.a1()" pour initialiser var. De là, les utilisations seront normales et pas comme avant.
+SOLUTION : utiliser "main.py"

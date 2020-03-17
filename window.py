@@ -497,6 +497,8 @@ def test():
     print(totalships.time_since_begin/diff)
     print("Facteur de dilatation réel :",facteur_dilatation)
 
+    print("Maximum de temps enregistré :",maxx)
+
 
 # Plus gros "maxx" croisé : 0.0312497615814209 s = 31 ms
 # "maxx" moyen croisé : 0.015908241271972656 = 16 ms
