@@ -1,8 +1,12 @@
-whataneatboat
+whataneatboat 🚢
 
 Projet pour TIPE : "Algorithmes d'optimisation de trajectoire d'un bateau"
 
-Objectifs à réaliser
+Objectifs :
 
-- implémentation de l'algorithme génétique de réseaux de neurones "NEAT" (NeuroEvolving Augmenting Topologies) sur "un bateau" (une population de plusieurs bateaux, chacun seul dans son environnement, face à un parcours d'obstacles)
-- comparaisons avec des résultats obtenus par des heuristiques (A* search, Dijkstra) [A* déjà traité]
+[x] Interface graphique pour manipuler les paramètres et la simulation
+[x] Simulation basique d'un bateau en mer
+[x] Implémentation des collisions du bateau
+[x] Possibilité d'ajout de plusieurs bateaux
+[x] Obtenir des résultats par des heuristiques (A* search, ou de façon similaire Dijkstra)
+[ ] Implémentation de l'algorithme génétique de réseaux de neurones "NEAT" (NeuroEvolving Augmenting Topologies) sur une population de plusieurs bateaux
